@@ -1,7 +1,11 @@
 from selenium import webdriver
 import time
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
+import csv
+import bs4 as bs
 
 
 driver = webdriver.Firefox()
@@ -20,11 +24,11 @@ driver = webdriver.Firefox()
 """
 
 
-def navigate_links():
+def navigation():
     driver.get("https://www.pakwheels.com")
-    time.sleep(2)
+    WebDriverWait(driver, 500).until(EC.element_to_be_clickable((By.ID, 'onesignal-popover-cancel-button')))
     driver.find_element_by_id('onesignal-popover-cancel-button').click()
-    time.sleep(5)
+    time.sleep(3)
     driver.find_element_by_link_text('Used Cars').click()
     driver.find_element_by_id('more_option').click()
     driver.find_element_by_name('home-query').send_keys('Honda Civic')
@@ -42,10 +46,30 @@ def navigate_links():
     driver.find_element_by_id('used-cars-search-btn').click()
 
 
+'''
+
+    - This function gets all the required links.
+    
+    - Firstly it gets all the Anchor tags that has the required links (class = "car-name ad-detail-path")
+    
+    - Then through the for-loop, it further parses the anchor tags to get the href from the anchor tags one by one and appends it to another list called as links and returns that list.
+    
+
+'''
+
+
+def get_car_links():
+    navigation()
+    links = []
+    elems = driver.find_elements(By.XPATH, '//a[@class = "car-name ad-detail-path"]')
+    for elem in elems:
+        links.append(elem.get_attribute('href'))
+    return links
+
 
 try:
-    print('initialized headless')
-    navigate_links()
+    print('Starting')
+    get_car_links()
 finally:
-    # driver.quit()
-    print("done")
+    print('Done')
+    driver.quit()
