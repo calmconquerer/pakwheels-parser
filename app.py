@@ -8,7 +8,9 @@ import csv
 import bs4 as bs
 
 
-driver = webdriver.Firefox()
+options = webdriver.FirefoxOptions()
+options.add_argument('-headless')
+driver = webdriver.Firefox(firefox_options=options)
 
 """
     - The function below, when called, opens up the browser and goes to wwww.pakwheels.com and then navigates to their
@@ -64,6 +66,7 @@ def get_car_links():
     elems = driver.find_elements(By.XPATH, '//a[@class = "car-name ad-detail-path"]')
     for elem in elems:
         links.append(elem.get_attribute('href'))
+    print(links)
     return links
 
 
