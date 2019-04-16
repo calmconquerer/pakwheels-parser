@@ -8,9 +8,9 @@ import xlwt
 
 
 options = webdriver.FirefoxOptions()
-options.add_argument('-headless') # Initializing Headless Browsing
+options.add_argument('-headless')  # Initializing Headless Browsing
 driver = webdriver.Firefox(firefox_options=options)
-
+workbook = xlwt.Workbook()
 
 """
     - The function below, when called, opens up the browser and goes to wwww.pakwheels.com and then navigates to their
@@ -29,8 +29,8 @@ driver = webdriver.Firefox(firefox_options=options)
 def navigation():
     driver.get("https://www.pakwheels.com")
     WebDriverWait(driver, 500).until(EC.element_to_be_clickable((By.ID, 'onesignal-popover-cancel-button')))
+    time.sleep(5)
     driver.find_element_by_id('onesignal-popover-cancel-button').click()
-    time.sleep(3)
     driver.find_element_by_link_text('Used Cars').click()
     driver.find_element_by_id('more_option').click()
     driver.find_element_by_name('home-query').send_keys('Honda Civic')
@@ -87,7 +87,6 @@ def get_car_links():
 
 
 def scrape_output(links):
-    workbook = xlwt.Workbook()
     style = xlwt.easyxf('font: bold 1')
     sheet1 = workbook.add_sheet('Report')
     sheet1.write(0, 0, 'Phone Number', style)
@@ -100,8 +99,8 @@ def scrape_output(links):
     sheet1.write(0, 7, 'Registration', style)
     sheet1.write(0, 8, 'Link', style)
     row = 1
-    for i in links:
-        driver.get(i)
+    for link in links:
+        driver.get(link)
         driver.find_element(By.XPATH, '//button[@class = "btn btn-large btn-block btn-success phone_number_btn"]').click()
         phone_number = driver.find_element(By.XPATH, '//*[@id="scrollToFixed"]/div[2]/div[1]/button[1]/span').text
         milage = driver.find_element(By.XPATH, '//*[@id="scroll_car_info"]/table/tbody/tr/td[2]/p').text
@@ -120,7 +119,7 @@ def scrape_output(links):
         sheet1.write(row, 5, engine_capacity)
         sheet1.write(row, 6, color)
         sheet1.write(row, 7, registration)
-        sheet1.write(row, 8, i)
+        sheet1.write(row, 8, link)
         row += 1
     workbook.save('output.xls')
 
