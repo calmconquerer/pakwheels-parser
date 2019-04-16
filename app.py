@@ -8,7 +8,7 @@ import xlwt
 
 
 options = webdriver.FirefoxOptions()
-options.add_argument('-headless')  # Initializing Headless Browsing
+options.add_argument('-headless')  # To disable headless mode, comment this line
 driver = webdriver.Firefox(firefox_options=options)
 workbook = xlwt.Workbook()
 
